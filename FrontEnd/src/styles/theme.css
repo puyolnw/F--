@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Mali:wght@400;700&display=swap'); /* Import Mali font */
+:root {
+  /* Primary Colors */
+  --primary-dark: #1a1a1a; /* Very Dark Gray */
+  --primary-main: #eaeaea; /* Light Gray */
+  --primary-light: #ffffff; /* Pure White */
+
+  /* Secondary Colors */
+  --secondary-dark: #003f5c; /* Deep Navy */
+  --secondary-main: #0077b6; /* Bright Blue */
+  --secondary-light: #90e0ef; /* Light Aqua */
+
+  /* Neutral Colors */
+  --neutral-dark: #3c3c3c; /* Charcoal Gray */
+  --neutral-main: #a6a6a6; /* Medium Gray */
+  --neutral-light: #dcdcdc; /* Light Gray */
+
+  /* Accent Colors */
+  --accent-blue: #6b84f4; /* Vivid Blue */
+  --accent-green: #48cae4; /* Aqua Green */
+  --accent-pink: #ff758f; /* Soft Coral Pink */
+
+  /* Background Colors */
+  --bg-primary: #f9fafb; /* Almost White Background */
+  --bg-secondary: #f1f3f5; /* Soft Gray Background */
+  --bg-tertiary: #e6e8eb; /* Very Light Gray Background */
+
+  /* Status Colors */
+  --success: #28a745; /* Bright Green Success */
+  --warning: #ffc107; /* Golden Yellow Warning */
+  --error: #dc3545; /* Rich Red Error */
+  --info: #17a2b8; /* Teal Blue Info */
+
+  /* Interactive States */
+  --hover-overlay: rgba(67, 97, 238, 0.1); /* Subtle Blue Hover */
+  --hover-light: rgba(0, 0, 0, 0.03);
+  --active-overlay: rgba(67, 97, 238, 0.2); /* Subtle Blue Active */
+  --active-light: rgba(0, 0, 0, 0.06);
+
+  /* Text Colors */
+  --text-primary: #ffffff; /* Pure White Text */
+  --text-secondary: #a6a6a6; /* Light Gray Text */
+  --text-on-hover: #000000; /* Black for hover text */
+
+  /* Border Colors */
+  --border-dark: #c4c4c4; /* Medium Light Gray */
+  --border-light: #e0e0e0; /* Very Light Gray */
+
+  /* Font */
+  --font-primary: 'Mali', sans-serif;
+
+  --table-background: #ffffff; /* สีพื้นหลังของตาราง */
+  --table-row-odd: #efefef; /* สีพื้นหลังของแถวเลขคี่ */
+  --table-row-hover: #e9ecef; /* สีพื้นหลังเมื่อ hover */
+  --table-header: #0077b6; /* สีพื้นหลังของหัวตาราง */
+  --table-header-text: #ffffff; /* สีข้อความในหัวตาราง */
+  
+  h1, h2, h3, h4, h5, h6, p {
+    font-family: var(--font-primary);
+  }
+}
+
+* {
+  font-family: var(--font-primary);
+}
+
+body {
+  font-family: var(--font-primary);
+}
+
+.MuiPaper-root * {
+  font-family: var(--font-primary) !important;
+}

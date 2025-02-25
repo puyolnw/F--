@@ -1,0 +1,67 @@
+.loan-history-container {
+    padding: 20px;
+    background-color: var(--bg-primary);
+  }
+  
+  .loan-history-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: var(--primary-dark);
+  }
+  
+  .loan-history-loading,
+  .loan-history-error {
+    font-size: 18px;
+    color: var(--error);
+    text-align: center;
+  }
+  
+  .loan-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--table-background);
+  }
+  
+  .loan-history-table th {
+    background-color: var(--table-header);
+    color: var(--table-header-text);
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .loan-history-table td {
+    padding: 10px;
+    text-align: center;
+    color: var(--primary-dark);
+  }
+  
+  .loan-history-table .row-even {
+    background-color: var(--table-background);
+  }
+  
+  .loan-history-table .row-odd {
+    background-color: var(--table-row-odd);
+  }
+  
+  .loan-history-table tr:hover {
+    background-color: var(--table-row-hover);
+  }
+  
+  .loan-history-details-button {
+    background-color: var(--secondary-main);
+    color: var(--text-primary);
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-family: var(--font-primary);
+  }
+  
+  .loan-history-details-button:hover {
+    background-color: var(--secondary-dark);
+  }
+  
+  .loan-history-details-button:active {
+    background-color: var(--secondary-light);
+  }

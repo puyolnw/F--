@@ -1,0 +1,266 @@
+/* Global Styles */
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-primary);
+  font-size: 15px;
+  color: var(--text-secondary);
+  background-color: var(--bg-secondary);
+}
+
+/* Container Styles */
+.container {
+  max-width: 60em;
+  padding: 1em 2em 2em 2em;
+  margin: 0 auto;
+  background-color: var(--primary-light);
+  border-radius: 8px;
+  box-shadow: 0px 3px 10px -2px rgba(0, 0, 0, 0.2);
+}
+
+/* Title Styles */
+.title {
+  color: var(--accent-pink);
+  margin-bottom: 0.5em;
+  font-family: var(--font-primary);
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+.mainTitle {
+  text-align: center;
+  color: var(--accent-blue);
+  margin-bottom: 1.2em;
+  font-size: 5.5em;
+  font-weight: 600;
+}
+
+/* Input Styles */
+.input,
+.input[type="radio"] + label,
+.input[type="checkbox"] + label:before,
+.select {
+  width: 100%;
+  padding: 0.8em;
+  line-height: 1.4;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: 3px;
+  transition: all 0.35s ease-in-out;
+  font-family: var(--font-primary);
+}
+
+.input:focus {
+  outline: 0;
+  border-color: var(--accent-blue);
+}
+
+.input:focus + .inputIcon i {
+  color: var(--accent-blue);
+}
+
+.input:focus + .inputIcon:after {
+  border-right-color: var(--accent-blue);
+}
+
+/* Input Group Styles */
+.inputGroup {
+  margin-bottom: 0.8em;
+  position: relative;
+}
+
+.inputGroupIcon {
+  position: relative;
+}
+
+.inputGroupIcon .input {
+  padding-left: 3.2em;
+}
+
+.inputIcon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2.8em;
+  height: 2.8em;
+  line-height: 2.8em;
+  text-align: center;
+  pointer-events: none;
+  color: var(--text-secondary);
+}
+
+.inputIcon:after {
+  position: absolute;
+  top: 0.6em;
+  bottom: 0.6em;
+  left: 2.8em;
+  display: block;
+  border-right: 1px solid var(--border-light);
+  content: "";
+  transition: all 0.35s ease-in-out;
+}
+
+.inputIcon i {
+  transition: all 0.35s ease-in-out;
+}
+
+/* Radio Button Styles */
+.radioGroup input[type="radio"] {
+  display: none;
+}
+
+.radioGroup label {
+  display: inline-block;
+  width: 50%;
+  text-align: center;
+  float: left;
+  border-radius: 0;
+  padding: 0.8em;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  transition: all 0.35s ease-in-out;
+  cursor: pointer;
+}
+
+.radioGroup label:first-of-type {
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+
+.radioGroup label:last-of-type {
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+.radioGroup input[type="radio"]:checked + label {
+  background-color: var(--accent-blue);
+  color: var(--text-primary);
+  border-color: var(--accent-blue);
+}
+
+/* Select Styles */
+.select {
+  height: 2.8em;
+  line-height: 1.8;
+  font-family: var(--font-primary);
+}
+
+.select:focus {
+  outline: 0;
+  border-color: var(--accent-blue);
+  background-color: var(--bg-primary);
+  color: var(--text-on-hover);
+}
+
+.select option {
+  background-color: var(--primary-light);
+  color: var(--text-on-hover);
+}
+
+/* Row and Column Styles */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -8px;
+}
+
+.row:before,
+.row:after {
+  content: "";
+  display: table;
+}
+
+.row:after {
+  clear: both;
+}
+
+.colHalf {
+  padding: 0 8px;
+  flex: 0 0 50%;
+  max-width: 50%;
+}
+
+.colThird {
+  padding: 0 8px;
+  flex: 0 0 33.33333%;
+  max-width: 33.33333%;
+}
+
+.colFull {
+  padding: 0 8px;
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+
+/* Button Styles */
+.button {
+  width: 100%;
+  padding: 0.8em;
+  margin-top: 1em;
+  background-color: var(--accent-blue);
+  color: var(--text-primary);
+  border: none;
+  border-radius: 3px;
+  font-size: 0.95em;
+  cursor: pointer;
+  transition: all 0.35s ease-in-out;
+  font-family: var(--font-primary);
+}
+
+.button:hover:not(:disabled) {
+  background-color: var(--accent-green);
+}
+
+.button:disabled {
+  background-color: var(--neutral-main);
+  cursor: not-allowed;
+}
+
+/* Message Styles */
+.errorMessage {
+  color: var(--error);
+  text-align: center;
+  margin: 0.8em 0;
+  font-size: 0.9em;
+}
+
+.successMessage {
+  color: var(--success);
+  text-align: center;
+  margin: 0.8em 0;
+  font-size: 0.9em;
+}
+
+.mainTitle {
+  text-align: center;
+  color: var(--accent-blue);
+  margin-bottom: 1.2em;
+  font-size: 1.2em;
+}
+
+/* Media Queries */
+@media only screen and (max-width: 600px) {
+  .colHalf {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding: 0;
+  }
+  
+  .colThird {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .container {
+    padding: 1em;
+  }
+  .filledInput {
+    color: var(--text-primary); /* สีตัวอักษรที่เข้มขึ้น */
+    font-weight: bold; /* เพิ่มความหนา */
+  }
+}

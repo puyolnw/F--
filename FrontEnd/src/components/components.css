@@ -1,0 +1,49 @@
+.nav-container {
+  background-color: var(--primary-dark);
+  color: var(--bg-primary);
+}
+
+.nav-item {
+  color: var(--neutral-light);
+  padding: 10px 15px; /* Add padding for better spacing */
+  border-radius: 8px; /* Smooth corners */
+  transition: all 0.3s ease; /* Smooth transition for hover and active states */
+}
+
+.nav-item:hover {
+  background-color: var(--hover-overlay); /* Subtle hover effect */
+  color: var(--accent-blue); /* Highlight text on hover */
+}
+
+.nav-item.active {
+  background-color: var(--accent-blue); /* Highlight background for active item */
+  color: var(--text-primary); /* Ensure text is readable on the accent color */
+  font-weight: bold; /* Make the active item stand out */
+  border-left: 4px solid var(--accent-green); /* Add a left border for emphasis */
+  padding-left: 11px; /* Adjust padding to account for the border */
+}
+
+.nav-item.active .MuiListItemIcon-root {
+  color: var(--accent-green) !important; /* Change icon color to green when active */
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+  .nav-container {
+    width: 100%; /* Full width for smaller screens */
+  }
+
+  .nav-item {
+    font-size: 14px; /* Smaller font size */
+  }
+
+  .nav-item:hover {
+    background-color: var(--hover-overlay);
+    color: var(--accent-blue);
+  }
+
+  .nav-item.active {
+    background-color: var(--accent-blue);
+    color: var(--text-primary);
+  }
+}
