@@ -13,7 +13,9 @@ import {
   Chip,
   Divider,
   CircularProgress,
+  Stack
 } from '@mui/material';
+import { CheckCircle } from '@mui/icons-material';
 import {
   Search,
   AccountBalance,
@@ -26,6 +28,12 @@ import {
   CloudUpload,
 } from '@mui/icons-material';
 import axios from 'axios'; // เพิ่ม axios สำหรับการเรียก API
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+
+
 
 interface Account {
   account_number: string;
@@ -34,7 +42,28 @@ interface Account {
   account_status: string;
 }
 
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+
+
 const TransactionForm: React.FC = () => {
+  const [openSnackbar, setOpenSnackbar] = useState(false); // สำหรับแจ้งเตือน
+  const [transactionResult, setTransactionResult] = useState<{
+    success: boolean;
+    message: string;
+    transactionType: 'deposit' | 'withdraw';
+    amount: number;
+    accountNumber: string;
+    transactionTime: string;
+  } | null>(null); // สำหรับเก็บผลลัพธ์การทำรายการ
   const [transactionType, setTransactionType] = useState<'deposit' | 'withdraw'>('deposit');
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const [transactionTime, setTransactionTime] = useState('');
@@ -196,15 +225,14 @@ const TransactionForm: React.FC = () => {
     }
   
     try {
-      // ดึงข้อมูล user จาก localStorage และแปลงเป็นออบเจ็กต์
       const userString = localStorage.getItem('user');
       if (!userString) {
         alert('ไม่พบข้อมูลผู้ใช้งาน กรุณาเข้าสู่ระบบอีกครั้ง');
         return;
       }
   
-      const user = JSON.parse(userString); // แปลง JSON string เป็น object
-      const username = user.username; // ดึงเฉพาะ username
+      const user = JSON.parse(userString);
+      const username = user.username;
   
       if (!username) {
         alert('ไม่พบข้อมูล username กรุณาเข้าสู่ระบบอีกครั้ง');
@@ -215,24 +243,48 @@ const TransactionForm: React.FC = () => {
         account_number: selectedAccount.account_number,
         transaction_type: transactionType === 'deposit' ? 'deposit' : 'withdrawal',
         amount: parseFloat(amount),
-        by_user: username, // ใช้ username ที่ดึงมา
+        by_user: username,
         channel: 'web',
       };
   
       const response = await axios.post('http://localhost:3301/api/transactions', payload);
   
       if (response.status === 201) {
-        alert('ทำรายการสำเร็จ!');
+        setTransactionResult({
+          success: true,
+          message: 'ทำรายการสำเร็จ!',
+          transactionType: transactionType,
+          amount: parseFloat(amount),
+          accountNumber: selectedAccount.account_number,
+          transactionTime: new Date().toLocaleString(),
+        });
+        setOpenSnackbar(true); // แสดง Snackbar
         setAmount('');
         setSlip(null);
         setPreviewUrl(null);
         setSelectedAccount(null);
       } else {
-        alert('เกิดข้อผิดพลาดในการทำรายการ');
+        setTransactionResult({
+          success: false,
+          message: 'เกิดข้อผิดพลาดในการทำรายการ',
+          transactionType: transactionType,
+          amount: parseFloat(amount),
+          accountNumber: selectedAccount.account_number,
+          transactionTime: new Date().toLocaleString(),
+        });
+        setOpenSnackbar(true); // แสดง Snackbar
       }
     } catch (error: any) {
       console.error('Error during transaction:', error);
-      alert(error.response?.data?.message || 'เกิดข้อผิดพลาดในการทำรายการ');
+      setTransactionResult({
+        success: false,
+        message: error.response?.data?.message || 'เกิดข้อผิดพลาดในการทำรายการ',
+        transactionType: transactionType,
+        amount: parseFloat(amount),
+        accountNumber: selectedAccount.account_number,
+        transactionTime: new Date().toLocaleString(),
+      });
+      setOpenSnackbar(true); // แสดง Snackbar
     }
   };
 
@@ -470,83 +522,262 @@ const TransactionForm: React.FC = () => {
           </Card>
         </Grid>
         <Grid item xs={12} md={4}>
-          {selectedAccount && (
-            <Card elevation={3} sx={{ borderRadius: 4, overflow: 'hidden', position: 'sticky', top: 24 }}>
-              <CardContent sx={{ p: 3 }}>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    mb: 3,
-                    pb: 2,
-                    borderBottom: '2px solid var(--border-light)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1,
-                    color: 'var(--secondary-main)',
-                    fontWeight: 600,
-                  }}
-                >
-                  <AccountBalance sx={{ fontSize: 28 }} />
-                  ข้อมูลบัญชี
+        {selectedAccount && (
+          <Card
+            elevation={3}
+            sx={{
+              borderRadius: 4,
+              position: 'sticky',
+              top: 24,
+              p: 3,
+              backgroundColor: 'var(--bg-secondary)',
+            }}
+          >
+            <CardContent>
+              <Typography
+                variant="h6"
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  fontWeight: 600,
+                  mb: 2,
+                  color: 'primary.main',
+                }}
+              >
+                <AccountBalance />
+                ข้อมูลบัญชี
+              </Typography>
+
+              <Box sx={{ mb: 2 }}>
+                <Typography color="text.secondary" variant="body2">
+                  เลขที่บัญชี
                 </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-                  <Box sx={{
-                    bgcolor: 'var(--bg-secondary)',
-                    p: 2,
-                    borderRadius: 2,
-                    border: '1px solid var(--border-light)',
-                  }}>
-                    <Typography color="text.secondary" variant="body2" sx={{ mb: 0.5 }}>
-                      เลขที่บัญชี
-                    </Typography>
-                    <Typography variant="h6" sx={{ fontFamily: 'monospace', letterSpacing: 1 }}>
-                      {selectedAccount.account_number}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography color="text.secondary" variant="body2" sx={{ mb: 0.5 }}>
-                      ชื่อบัญชี
-                    </Typography>
-                    <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                      {selectedAccount.account_name}
-                    </Typography>
-                  </Box>
-                  <Divider sx={{ my: 1 }} />
-                  <Box sx={{
-                    bgcolor: 'var(--hover-light)',
-                    p: 2,
-                    borderRadius: 2,
-                    border: '1px solid var(--border-light)',
-                  }}>
-                    <Typography color="text.secondary" variant="body2" sx={{ mb: 0.5 }}>
-                      ยอดเงินคงเหลือ
-                    </Typography>
-                    <Typography variant="h5" sx={{ color: 'var(--secondary-main)', fontWeight: 700 }}>
-                      {formatBalance(selectedAccount.balance)}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography color="text.secondary" variant="body2" sx={{ mb: 0.5 }}>
-                      สถานะบัญชี
-                    </Typography>
-                    <Chip
-                      label={selectedAccount.account_status}
-                      size="small"
-                      sx={{
-                        bgcolor: selectedAccount.account_status === 'ปกติ' ? 'var(--success-light)' : 'var(--error-light)',
-                        color: selectedAccount.account_status === 'ปกติ' ? 'var(--success-dark)' : 'var(--error-dark)',
-                        fontWeight: 500,
-                      }}
-                    />
-                  </Box>
-                </Box>
-              </CardContent>
-            </Card>
-          )}
-        </Grid>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  {selectedAccount.account_number}
+                </Typography>
+              </Box>
+
+              <Box sx={{ mb: 2 }}>
+                <Typography color="text.secondary" variant="body2">
+                  ชื่อบัญชี
+                </Typography>
+                <Typography variant="body1">{selectedAccount.account_name}</Typography>
+              </Box>
+
+              <Divider sx={{ my: 2 }} />
+
+              <Box sx={{ mb: 2 }}>
+                <Typography color="text.secondary" variant="body2">
+                  ยอดเงินคงเหลือ
+                </Typography>
+                <Typography variant="h5" sx={{ fontWeight: 700, color: 'success.main' }}>
+                  {formatBalance(selectedAccount.balance)}
+                </Typography>
+              </Box>
+
+              <Box>
+                <Typography color="text.secondary" variant="body2">
+                  สถานะบัญชี
+                </Typography>
+                <Chip
+                  label={selectedAccount.account_status}
+                  size="small"
+                  sx={{
+                    bgcolor:
+                      selectedAccount.account_status === 'ปกติ'
+                        ? 'success.light'
+                        : 'error.light',
+                    color:
+                      selectedAccount.account_status === 'ปกติ'
+                        ? 'success.dark'
+                        : 'error.dark',
+                    fontWeight: 500,
+                  }}
+                />
+              </Box>
+            </CardContent>
+          </Card>
+        )}
       </Grid>
-    </Container>
-  );
+    </Grid>
+    <Snackbar
+open={openSnackbar}
+autoHideDuration={6000}
+onClose={() => setOpenSnackbar(false)}
+anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+>
+<Alert
+  onClose={() => setOpenSnackbar(false)}
+  severity={transactionResult?.success ? 'success' : 'error'}
+  sx={{ width: '100%' }}
+>
+  {transactionResult?.message}
+</Alert>
+</Snackbar>
+
+<Dialog 
+open={!!transactionResult} 
+onClose={() => setTransactionResult(null)} 
+maxWidth="sm" 
+fullWidth
+PaperProps={{
+  sx: {
+    borderRadius: 2,
+    boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+    p: 2
+  }
+}}
+>
+<DialogTitle sx={{ 
+  textAlign: 'center', 
+  borderBottom: '2px dashed #e0e0e0',
+  pb: 2
+}}>
+  <Box sx={{
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    mb: 2
+  }}>
+    {transactionResult?.success && (
+      <CheckCircle 
+        sx={{ 
+          fontSize: 48, 
+          color: transactionResult?.transactionType === 'deposit' ? 'success.main' : 'error.main',
+          mr: 1 
+        }} 
+      />
+    )}
+    <Typography variant="h5" sx={{ fontWeight: 700 }}>
+      ทำรายการสำเร็จ
+    </Typography>
+  </Box>
+  <Typography variant="caption" display="block" sx={{ color: 'text.secondary' }}>
+    เลขที่รายการ: TXN-{new Date().getTime()}
+  </Typography>
+</DialogTitle>
+
+<DialogContent sx={{ mt: 2 }}>
+  <Box sx={{ 
+    textAlign: 'center', 
+    mb: 3,
+    p: 3,
+    bgcolor: transactionResult?.transactionType === 'deposit' ? 'success.lighter' : 'error.lighter',
+    borderRadius: 2,
+    border: `2px solid ${transactionResult?.transactionType === 'deposit' ? '#2e7d32' : '#d32f2f'}`
+  }}>
+    <Typography variant="h6" sx={{ 
+      color: transactionResult?.transactionType === 'deposit' ? 'success.dark' : 'error.dark',
+      fontWeight: 600
+    }}>
+      {transactionResult?.transactionType === 'deposit' ? 'ฝากเงิน' : 'ถอนเงิน'}
+    </Typography>
+    <Typography variant="h3" sx={{ 
+      fontWeight: 700, 
+      color: transactionResult?.transactionType === 'deposit' ? 'success.dark' : 'error.dark',
+      my: 2 
+    }}>
+      {formatBalance(transactionResult?.amount.toString() || '0')}
+    </Typography>
+  </Box>
+
+  <Grid container spacing={3} sx={{ px: 2 }}>
+    <Grid item xs={12}>
+      <Typography variant="subtitle2" color="text.secondary">เลขที่บัญชี</Typography>
+      <Box sx={{ 
+        p: 2, 
+        bgcolor: 'grey.50', 
+        borderRadius: 1,
+        mt: 1 
+      }}>
+        <Typography variant="body1" sx={{ fontWeight: 500 }}>
+          {transactionResult?.accountNumber}
+        </Typography>
+      </Box>
+    </Grid>
+
+    <Grid item xs={6}>
+      <Typography variant="subtitle2" color="text.secondary">วันที่</Typography>
+      <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1, mt: 1 }}>
+        <Typography variant="body2">
+          {new Date(transactionResult?.transactionTime || '').toLocaleDateString('th-TH')}
+        </Typography>
+      </Box>
+    </Grid>
+
+    <Grid item xs={6}>
+      <Typography variant="subtitle2" color="text.secondary">เวลา</Typography>
+      <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1, mt: 1 }}>
+        <Typography variant="body2">
+          {new Date(transactionResult?.transactionTime || '').toLocaleTimeString('th-TH')}
+        </Typography>
+      </Box>
+    </Grid>
+
+    {transactionType === 'deposit' && (
+      <Grid item xs={12}>
+        <Typography variant="subtitle2" color="text.secondary">สลิปการโอนเงิน</Typography>
+        <Box sx={{ 
+          mt: 1,
+          p: 3,
+          border: '2px dashed #e0e0e0',
+          borderRadius: 2,
+          textAlign: 'center',
+          minHeight: 200,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          {previewUrl ? (
+            <img 
+              src={previewUrl} 
+              alt="สลิปการโอนเงิน"
+              style={{
+                maxWidth: '100%',
+                maxHeight: '200px',
+                borderRadius: '8px'
+              }}
+            />
+          ) : (
+            <Typography color="text.secondary">
+              ไม่มีรูปสลิป
+            </Typography>
+          )}
+        </Box>
+      </Grid>
+    )}
+  </Grid>
+</DialogContent>
+
+<DialogActions sx={{ 
+  justifyContent: 'center', 
+  pb: 3,
+  pt: 2,
+  borderTop: '2px dashed #e0e0e0',
+  mt: 2
+}}>
+  <Button
+    variant="contained"
+    onClick={() => setTransactionResult(null)}
+    sx={{
+      px: 6,
+      py: 1.5,
+      borderRadius: 2,
+      fontWeight: 600,
+      bgcolor: transactionResult?.transactionType === 'deposit' ? 'success.main' : 'error.main',
+      '&:hover': {
+        bgcolor: transactionResult?.transactionType === 'deposit' ? 'success.dark' : 'error.dark',
+      }
+    }}
+  >
+    ตกลง
+  </Button>
+</DialogActions>
+</Dialog>
+
+  </Container>
+);
 };
 
 export default TransactionForm;

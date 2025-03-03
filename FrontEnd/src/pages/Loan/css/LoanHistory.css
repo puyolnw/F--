@@ -1,0 +1,68 @@
+.loan-history-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.loan-history-title {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.loan-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+.loan-history-table th, 
+.loan-history-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.loan-history-table th {
+  background-color: #3498db;
+  color: white;
+}
+
+.row-even {
+  background-color: #f8f9fa;
+}
+
+.row-odd {
+  background-color: white;
+}
+
+.loan-history-details-button {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.loan-history-details-button:hover {
+  background-color: #219a52;
+}
+
+.loan-detail-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.status-paid {
+  color: #27ae60;
+  font-weight: bold;
+}
+
+.status-pending {
+  color: #e74c3c;
+  font-weight: bold;
+}

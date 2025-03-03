@@ -20,11 +20,28 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  // State to manage the open/close state of collapsible menus
   const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({});
 
   const handleToggle = (itemText: string) => {
-    setOpenMenus((prev) => ({ ...prev, [itemText]: !prev[itemText] }));
+    setOpenMenus(prev => {
+      const newState = { ...prev };
+      
+      // Close all other menus except the current path
+      Object.keys(newState).forEach(key => {
+        if (key !== itemText && !location.pathname.includes(key.toLowerCase())) {
+          newState[key] = false;
+        }
+      });
+      
+      // Toggle current menu if not active path
+      if (!location.pathname.includes(itemText.toLowerCase())) {
+        newState[itemText] = !prev[itemText];
+      } else {
+        newState[itemText] = true; // Keep open if active
+      }
+      
+      return newState;
+    });
   };
 
   const drawerContent = (
@@ -39,7 +56,6 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
         }}
         onClick={() => navigate('/')}
       >
-        <img src="/logo.png" alt="Logo" style={{ width: 40, height: 40 }} />
         <Typography variant="h6" sx={{ color: 'var(--bg-primary)' }}>
           VillageFund
         </Typography>
@@ -47,8 +63,7 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
 
       <List>
         {menuItems.map((item) => (
-          <React.Fragment key={item.text}>
-            {/* Main Menu Item */}
+          <React.Fragment key={item.nameTH}>
             <ListItem
               component="div"
               onClick={() =>
@@ -72,24 +87,23 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
                   color:
                     location.pathname === item.path
                       ? 'var(--accent-green)'
-                      : 'inherit', // Green when active
+                      : 'inherit',
                 }}
               >
                 <item.icon />
               </ListItemIcon>
-              <ListItemText primary={item.text} />
+              <ListItemText primary={item.nameTH} />
               {item.children && (
                 openMenus[item.text] ? <ExpandLess /> : <ExpandMore />
               )}
             </ListItem>
 
-            {/* Submenu Items */}
             {item.children && (
               <Collapse in={openMenus[item.text]} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                   {item.children.map((child) => (
                     <ListItem
-                      key={child.text}
+                      key={child.nameTH}
                       onClick={() => navigate(child.path)}
                       sx={{
                         pl: 4,
@@ -107,12 +121,12 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
                           color:
                             location.pathname === child.path
                               ? 'var(--accent-green)'
-                              : 'inherit', // Green when active
+                              : 'inherit',
                         }}
                       >
                         <child.icon />
                       </ListItemIcon>
-                      <ListItemText primary={child.text} />
+                      <ListItemText primary={child.nameTH} />
                     </ListItem>
                   ))}
                 </List>

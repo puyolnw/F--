@@ -31,37 +31,23 @@ const SearchAccount: React.FC = () => {
   const navigate = useNavigate();
 
   const handleSearch = useCallback(async () => {
-    if (!query.trim() || query.trim().length < 2) {
-      setError('กรุณากรอกข้อมูลที่ต้องการค้นหาอย่างน้อย 2 ตัวอักษร');
-      return;
-    }
-
     setIsLoading(true);
     setError(null);
-
+  
     try {
       const response = await axios.get<{success: boolean; results: Account[]}>(
         `http://localhost:3301/api/accounts/search?term=${encodeURIComponent(query.trim())}`
       );
-
+  
       if (response.data && Array.isArray(response.data.results)) {
         const accounts = response.data.results;
         if (accounts.length === 0) {
           setError('ไม่พบบัญชีที่ตรงกับการค้นหา');
         } else {
-          if (accounts.length === 1) {
-            navigate('/account-details', {
-              state: { accountInfo: accounts[0] }
-            });
-          } else {
-            navigate('/searchresults', {
-              state: { results: accounts }
-            });
-          }
+          navigate('/searchresults', {
+            state: { results: accounts }
+          });
         }
-      } else {
-        console.error('Invalid response format:', response.data);
-        setError('เกิดข้อผิดพลาดในการรับข้อมูล กรุณาลองใหม่อีกครั้ง');
       }
     } catch (err) {
       console.error('Search error:', err);
@@ -70,7 +56,7 @@ const SearchAccount: React.FC = () => {
       setIsLoading(false);
     }
   }, [query, navigate]);
-
+  
   const handleOpenNewAccount = useCallback(() => {
     navigate('/members/addmember');
   }, [navigate]);
@@ -84,7 +70,6 @@ const SearchAccount: React.FC = () => {
         alignItems: 'flex-start',
         justifyContent: 'center',
         paddingTop: 2,
-
       }}
     >
       <Paper
@@ -198,6 +183,8 @@ const SearchAccount: React.FC = () => {
           <Alert 
             onClose={() => setError(null)} 
             severity="error" 
+            elevation={6}
+            variant="filled"
             sx={{ 
               width: '100%',
               fontFamily: 'var(--font-primary)'
